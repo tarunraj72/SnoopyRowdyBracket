@@ -3,20 +3,23 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: CropGuard AI API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: auth
+  - name: detection
+  - name: dashboard
+  - name: alerts
+  - name: community
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +27,345 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /auth/demo-login:
+    post:
+      operationId: demoLogin
+      tags: [auth]
+      summary: Sign in to the judge-ready demo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DemoLoginInput"
+      responses:
+        "200":
+          description: Demo session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+  /detections:
+    get:
+      operationId: listDetections
+      tags: [detection]
+      summary: List recent detections
+      responses:
+        "200":
+          description: Detection history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Detection"
+    post:
+      operationId: createDetection
+      tags: [detection]
+      summary: Analyze an uploaded crop image
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DetectionInput"
+      responses:
+        "201":
+          description: Detection result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Detection"
+  /detections/{id}/recommendations:
+    get:
+      operationId: getDetectionRecommendations
+      tags: [detection]
+      summary: Get localized treatment recommendations
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Recommendation groups
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationBundle"
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get farmer dashboard summary and trends
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+  /fields:
+    get:
+      operationId: listFields
+      tags: [dashboard]
+      summary: List farmer fields
+      responses:
+        "200":
+          description: Fields
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Field"
+    post:
+      operationId: createField
+      tags: [dashboard]
+      summary: Add a field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FieldInput"
+      responses:
+        "201":
+          description: Field created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Field"
+  /alerts:
+    get:
+      operationId: listAlerts
+      tags: [alerts]
+      summary: List weather and regional risk alerts
+      responses:
+        "200":
+          description: Alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+  /community/posts:
+    get:
+      operationId: listCommunityPosts
+      tags: [community]
+      summary: List farmer questions and expert answers
+      responses:
+        "200":
+          description: Community posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommunityPost"
+    post:
+      operationId: createCommunityPost
+      tags: [community]
+      summary: Post a farmer question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityPostInput"
+      responses:
+        "201":
+          description: Community post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityPost"
+  /community/expert-requests:
+    post:
+      operationId: createExpertRequest
+      tags: [community]
+      summary: Contact an agricultural expert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpertRequestInput"
+      responses:
+        "201":
+          description: Expert request queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpertRequest"
 components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
   schemas:
     HealthStatus:
       type: object
       properties:
         status:
           type: string
-      required:
-        - status
-
+      required: [status]
+    DemoLoginInput:
+      type: object
+      properties:
+        name:
+          type: string
+        contact:
+          type: string
+      required: [name, contact]
+    AuthSession:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+      required: [token, user]
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        role: { type: string, enum: [farmer, officer, kvk] }
+        village: { type: string }
+        state: { type: string }
+      required: [id, name, role, village, state]
+    DetectionInput:
+      type: object
+      properties:
+        sampleId:
+          type: string
+        imageDataUrl:
+          type: ["string", "null"]
+        crop:
+          type: string
+        fieldId:
+          type: ["integer", "null"]
+      required: [crop]
+    Detection:
+      type: object
+      properties:
+        id: { type: integer }
+        crop: { type: string }
+        disease: { type: string }
+        diseaseHindi: { type: string }
+        type: { type: string, enum: [disease, pest, healthy] }
+        confidence: { type: number }
+        severity: { type: string, enum: [low, medium, high] }
+        description: { type: string }
+        detectedAt: { type: string }
+        imageUrl: { type: ["string", "null"] }
+        sampleId: { type: ["string", "null"] }
+      required: [id, crop, disease, diseaseHindi, type, confidence, severity, description, detectedAt, imageUrl, sampleId]
+    Recommendation:
+      type: object
+      properties:
+        title: { type: string }
+        detail: { type: string }
+        dosage: { type: ["string", "null"] }
+        priority: { type: string, enum: [now, soon, prevent] }
+      required: [title, detail, dosage, priority]
+    RecommendationBundle:
+      type: object
+      properties:
+        organic:
+          type: array
+          items: { $ref: "#/components/schemas/Recommendation" }
+        chemical:
+          type: array
+          items: { $ref: "#/components/schemas/Recommendation" }
+        prevention:
+          type: array
+          items: { $ref: "#/components/schemas/Recommendation" }
+      required: [organic, chemical, prevention]
+    DashboardSummary:
+      type: object
+      properties:
+        totalScans: { type: integer }
+        activeFields: { type: integer }
+        highRiskAlerts: { type: integer }
+        cropSavedAcres: { type: number }
+        trend:
+          type: array
+          items:
+            type: object
+            properties:
+              label: { type: string }
+              value: { type: integer }
+            required: [label, value]
+        commonIssues:
+          type: array
+          items:
+            type: object
+            properties:
+              label: { type: string }
+              value: { type: integer }
+            required: [label, value]
+      required: [totalScans, activeFields, highRiskAlerts, cropSavedAcres, trend, commonIssues]
+    FieldInput:
+      type: object
+      properties:
+        name: { type: string }
+        crop: { type: string }
+        acres: { type: number }
+        village: { type: string }
+      required: [name, crop, acres, village]
+    Field:
+      allOf:
+        - $ref: "#/components/schemas/FieldInput"
+        - type: object
+          properties:
+            id: { type: integer }
+            lastScanned: { type: string }
+          required: [id, lastScanned]
+    Alert:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        message: { type: string }
+        severity: { type: string, enum: [info, watch, urgent] }
+        area: { type: string }
+        time: { type: string }
+        icon: { type: string }
+      required: [id, title, message, severity, area, time, icon]
+    CommunityPostInput:
+      type: object
+      properties:
+        title: { type: string }
+        body: { type: string }
+        crop: { type: string }
+      required: [title, body, crop]
+    CommunityPost:
+      allOf:
+        - $ref: "#/components/schemas/CommunityPostInput"
+        - type: object
+          properties:
+            id: { type: integer }
+            author: { type: string }
+            replies: { type: integer }
+            postedAt: { type: string }
+            expertAnswered: { type: boolean }
+          required: [id, author, replies, postedAt, expertAnswered]
+    ExpertRequestInput:
+      type: object
+      properties:
+        subject: { type: string }
+        message: { type: string }
+        preferredLanguage: { type: string }
+      required: [subject, message, preferredLanguage]
+    ExpertRequest:
+      allOf:
+        - $ref: "#/components/schemas/ExpertRequestInput"
+        - type: object
+          properties:
+            id: { type: integer }
+            status: { type: string, enum: [queued, assigned, answered] }
+            eta: { type: string }
+          required: [id, status, eta]

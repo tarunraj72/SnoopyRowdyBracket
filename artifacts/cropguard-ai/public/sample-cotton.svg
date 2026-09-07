@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#fff5cf"/>
+      <stop offset="1" stop-color="#f0cf7c"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="600" rx="34" fill="url(#bg)"/>
+  <path d="M450 520C444 380 456 236 428 97" fill="none" stroke="#44723c" stroke-width="20" stroke-linecap="round"/>
+  <path d="M431 284C288 259 182 183 131 78c145 7 250 64 310 170Z" fill="#6d9e47" stroke="#365e36" stroke-width="10"/>
+  <path d="M449 325C587 229 700 226 806 315 711 411 598 424 450 359Z" fill="#80aa4b" stroke="#365e36" stroke-width="10"/>
+  <g fill="#e9c25f" stroke="#9f7031" stroke-width="6">
+    <circle cx="597" cy="323" r="47"/>
+    <circle cx="685" cy="345" r="35"/>
+    <circle cx="305" cy="211" r="31"/>
+  </g>
+  <g fill="#8c4b2a">
+    <circle cx="604" cy="315" r="10"/>
+    <circle cx="677" cy="340" r="8"/>
+    <circle cx="296" cy="207" r="7"/>
+  </g>
+  <text x="42" y="548" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#5a451d">CropGuard sample · cotton boll</text>
+</svg>

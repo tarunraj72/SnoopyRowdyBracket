@@ -1,6 +1,6 @@
-# [Project name]
+# CropGuard AI
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+CropGuard AI is a multilingual, offline-friendly crop disease and pest early-warning companion for Indian farmers, extension officers, and KVK staff.
 
 ## Run & Operate
 
@@ -22,23 +22,33 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/cropguard-ai` — React + Vite farmer-facing application and SIH demo routes
+- `artifacts/api-server/src/routes/cropguard.ts` — demo detection, recommendation, field, alerts, and community API
+- `lib/api-spec/openapi.yaml` — source-of-truth API contract
+- `lib/db/src/schema/cropguard.ts` — PostgreSQL tables for users, fields, detections, and community posts
+- `artifacts/cropguard-ai/README.md` — architecture, model adapter, and roadmap
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The API contract is OpenAPI-first so frontend hooks, Zod validation, and server behavior stay aligned.
+- The current detection adapter is deterministic for SIH judging and includes bundled sample imagery; it is shaped for a PlantVillage-trained ONNX/TFLite or Plant.id adapter later.
+- Recommendations are separate from detection classes so agronomists can update treatment guidance without retraining inference.
+- Open-Meteo provides live no-key weather context for the alerts screen, with seeded alerts as a clear offline fallback.
+- The client stores demo session, language choice, and failed scan submissions locally for low-connectivity behavior.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+CropGuard includes demo sign-in, camera/gallery image capture, bundled sample scans, confidence and severity results, organic and chemical guidance, English/Hindi/Telugu UI, read-aloud support, weather risk alerts, field history, trend summaries, community questions, expert requests, offline queue states, and an Impact & Scalability page for SIH judging.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Prioritize a working end-to-end SIH demo over exhaustive production integrations.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Regenerate API hooks after changing `lib/api-spec/openapi.yaml`.
+- The Vite build requires workflow-provided `PORT` and `BASE_PATH`; use the managed web workflow for previews.
+- Chemical dosages in the demo are illustrative and must be validated against current state registrations and product labels before production use.
 
 ## Pointers
 

@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "CropGuard AI"
+description = "An AI-powered crop disease and pest detection platform for Indian farmers, agricultural extension officers, and KVK staff, with multilingual guidance, alerts, field history, and expert support."
+version = "1.0.0"
+id = "artifacts/cropguard-ai"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24037
+
+[services.development]
+run = "pnpm --filter @workspace/cropguard-ai run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/cropguard-ai", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/cropguard-ai/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24037"
+BASE_PATH = "/"

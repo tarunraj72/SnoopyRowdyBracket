@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#dff3d7"/>
+      <stop offset="1" stop-color="#a7d99f"/>
+    </linearGradient>
+    <radialGradient id="leaf" cx=".35" cy=".3">
+      <stop stop-color="#76b84d"/>
+      <stop offset="1" stop-color="#2f743d"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="600" rx="34" fill="url(#bg)"/>
+  <path d="M430 520C398 378 408 245 478 92" fill="none" stroke="#255c36" stroke-width="22" stroke-linecap="round"/>
+  <path d="M460 334C300 312 199 223 162 116c151-8 255 61 298 188Z" fill="url(#leaf)" stroke="#1f5c36" stroke-width="10"/>
+  <path d="M468 350C572 230 682 212 784 270 728 397 608 432 470 375Z" fill="#478b45" stroke="#1f5c36" stroke-width="10"/>
+  <g fill="#b95834" opacity=".9">
+    <ellipse cx="300" cy="211" rx="30" ry="21"/>
+    <ellipse cx="358" cy="249" rx="26" ry="18"/>
+    <ellipse cx="593" cy="322" rx="31" ry="22"/>
+    <ellipse cx="660" cy="294" rx="23" ry="17"/>
+    <ellipse cx="554" cy="375" rx="18" ry="13"/>
+  </g>
+  <text x="42" y="548" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#1f4931">CropGuard sample · tomato leaf</text>
+</svg>
