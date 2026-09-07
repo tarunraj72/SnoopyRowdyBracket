@@ -59,7 +59,7 @@ const createDemoSession = (name: string): AuthSession => {
 
 function Button({ children, variant = 'primary', className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'outline' | 'quiet' }) {
   const style = variant === 'primary' ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-95' : variant === 'outline' ? 'border border-[hsl(var(--border))] bg-[hsl(var(--card))] hover:border-[hsl(var(--primary))] hover:text-[hsl(var(--primary))]' : 'bg-[hsl(var(--muted))] hover:bg-[hsl(var(--secondary))]';
-  return <button {...props} className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition active:scale-[.98] disabled:opacity-50 ${style} ${className}`} />;
+  return <button {...props} className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition active:scale-[.98] disabled:opacity-50 ${style} ${className}`}>{children}</button>;
 }
 function Card({ children, className = '' }: { children: ReactNode; className?: string }) { return <section className={`rounded-2xl border border-[hsl(var(--card-border))] bg-[hsl(var(--card))] field-shadow-sm ${className}`}>{children}</section>; }
 function Pill({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'good' | 'warn' | 'danger' }) { const c = { neutral: 'bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]', good: 'bg-[#d9eddd] text-[#35603b]', warn: 'bg-[#f9e9be] text-[#795618]', danger: 'bg-[#f6d8d2] text-[#873a31]' }; return <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${c[tone]}`}>{children}</span>; }
