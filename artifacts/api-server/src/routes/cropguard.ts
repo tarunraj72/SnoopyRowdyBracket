@@ -26,7 +26,7 @@ type DetectionRecord = {
 
 const now = () => new Date().toISOString();
 
-const detections: DetectionRecord[] = [
+const sampleDetections: DetectionRecord[] = [
   {
     id: 101,
     crop: "Tomato",
@@ -71,10 +71,9 @@ const detections: DetectionRecord[] = [
   },
 ];
 
-const fields = [
-  { id: 1, name: "North field", crop: "Tomato", acres: 2.5, village: "Kothapally", lastScanned: "2 days ago" },
-  { id: 2, name: "Canal side", crop: "Cotton", acres: 4, village: "Kothapally", lastScanned: "5 days ago" },
-];
+const detections: DetectionRecord[] = [];
+
+const fields: Array<{ id: number; name: string; crop: string; acres: number; village: string; lastScanned: string }> = [];
 
 const alerts = [
   {
@@ -106,28 +105,16 @@ const alerts = [
   },
 ];
 
-const posts = [
-  {
-    id: 1,
-    title: "White powder on my chilli leaves",
-    body: "Can someone help identify this? It started after the last cloudy week.",
-    crop: "Chilli",
-    author: "Savitri · Nalgonda",
-    replies: 4,
-    postedAt: "2 hours ago",
-    expertAnswered: true,
-  },
-  {
-    id: 2,
-    title: "Best neem spray timing for cotton?",
-    body: "I want to reduce chemical sprays. When should I apply neem seed kernel extract?",
-    crop: "Cotton",
-    author: "Ramesh · Warangal",
-    replies: 2,
-    postedAt: "Yesterday",
-    expertAnswered: false,
-  },
-];
+const posts: Array<{
+  id: number;
+  title: string;
+  body: string;
+  crop: string;
+  author: string;
+  replies: number;
+  postedAt: string;
+  expertAnswered: boolean;
+}> = [];
 
 const recommendations = {
   "early blight": {
@@ -179,7 +166,7 @@ router.post("/auth/demo-login", (req, res) => {
       id: "demo-farmer-01",
       name: parsed.data.name,
       role: "farmer",
-      village: "Kothapally",
+      village: "Village not set",
       state: "Telangana",
     },
   });
@@ -195,15 +182,15 @@ router.post("/detections", (req, res) => {
   }
 
   const sampleResults: Record<string, DetectionRecord> = {
-    "tomato-blight": detections[0],
-    "cotton-bollworm": detections[1],
-    "rice-healthy": detections[2],
+    "tomato-blight": sampleDetections[0],
+    "cotton-bollworm": sampleDetections[1],
+    "rice-healthy": sampleDetections[2],
   };
   const sample = parsed.data.sampleId ? sampleResults[parsed.data.sampleId] : undefined;
   const record: DetectionRecord = sample
     ? { ...sample, id: Math.max(...detections.map((item) => item.id)) + 1, detectedAt: now() }
     : {
-        id: Math.max(...detections.map((item) => item.id)) + 1,
+        id: detections.length ? Math.max(...detections.map((item) => item.id)) + 1 : 101,
         crop: parsed.data.crop,
         disease: "Needs expert review",
         diseaseHindi: "विशेषज्ञ की जाँच ज़रूरी",
@@ -232,23 +219,12 @@ router.get("/detections/:id/recommendations", (req, res) => {
 
 router.get("/dashboard/summary", (_req, res) => {
   res.json({
-    totalScans: detections.length + 8,
+    totalScans: detections.length,
     activeFields: fields.length,
-    highRiskAlerts: alerts.filter((alert) => alert.severity === "urgent").length,
-    cropSavedAcres: 6.5,
-    trend: [
-      { label: "Apr", value: 3 },
-      { label: "May", value: 5 },
-      { label: "Jun", value: 4 },
-      { label: "Jul", value: 7 },
-      { label: "Aug", value: 6 },
-      { label: "Sep", value: 3 },
-    ],
-    commonIssues: [
-      { label: "Fungal", value: 9 },
-      { label: "Pests", value: 6 },
-      { label: "Healthy", value: 4 },
-    ],
+    highRiskAlerts: 0,
+    cropSavedAcres: 0,
+    trend: [],
+    commonIssues: [],
   });
 });
 
@@ -262,7 +238,7 @@ router.post("/fields", (req, res) => {
   }
   const field = {
     ...parsed.data,
-    id: Math.max(...fields.map((item) => item.id)) + 1,
+    id: fields.length ? Math.max(...fields.map((item) => item.id)) + 1 : 1,
     lastScanned: "Not scanned yet",
   };
   fields.push(field);
